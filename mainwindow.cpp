@@ -72,6 +72,18 @@ void MainWindow::on_Button_start_clicked()
         video >> frameOrigin;
 // 히스토그램 출력
         histoview(frameOrigin);
+//Video tab 출력
+        if (ui->tabWidget->currentIndex() == 0)
+        {
+            myVideo myVideo;
+            int r = ui->checkBox_R->checkState();
+            int g = ui->checkBox_G->checkState();
+            int b = ui->checkBox_B->checkState();
+            Mat frame = myVideo.get_frame(frameOrigin, r, g, b);
+            QImage qimg_v(frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+            pixmap_Video.setPixmap( QPixmap::fromImage(qimg_v) );
+            ui->graphicsView_Video->fitInView(&pixmap_Video, Qt::KeepAspectRatio);
+        }
 
         qApp->processEvents();
     }

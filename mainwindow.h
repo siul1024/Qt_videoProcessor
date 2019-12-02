@@ -10,6 +10,7 @@
 #include <QCloseEvent>
 #include <QMessageBox>
 
+#include "myvideo.h"
 #include "opencv2/opencv.hpp"
 
 
