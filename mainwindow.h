@@ -36,12 +36,10 @@ protected:
 private slots:
     void on_Button_start_clicked();
 
-
 public:
     cv::VideoCapture video;
     Ui::MainWindow *ui;
     cv::Mat frameOrigin;
-
 
 private:
     QGraphicsPixmapItem pixmap_R;
