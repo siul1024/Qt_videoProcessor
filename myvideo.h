@@ -1,7 +1,7 @@
 #ifndef MYVIDEO_H
 #define MYVIDEO_H
 
-#include "mainwindow.h"
+#include <QImage>
 #include "opencv2/opencv.hpp"
 
 class myVideo
@@ -12,7 +12,7 @@ public:
 
 
 public:
-    QImage get_frame(cv::Mat frameOrigin, int r, int g, int b);
+    cv::Mat get_frame(cv::Mat frameOrigin, int r, int g, int b);
 
 
 };

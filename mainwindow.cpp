@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
 using namespace cv;
 using namespace std;
 
@@ -75,17 +76,15 @@ void MainWindow::on_Button_start_clicked()
 //Video tab 출력
         if (ui->tabWidget->currentIndex() == 0)
         {
-            if(!frameOrigin.empty())
-            {
-                myVideo myVideo;
-                int r = ui->checkBox_R->checkState();
-                int g = ui->checkBox_G->checkState();
-                int b = ui->checkBox_B->checkState();
-                QImage qimg_v = myVideo.get_frame(frameOrigin, r, g, b);
-                pixmap_Video.setPixmap( QPixmap::fromImage(qimg_v) );
-                ui->graphicsView_Video->fitInView(&pixmap_Video, Qt::KeepAspectRatio);
 
-            }
+            int r = ui->checkBox_R->checkState();
+            int g = ui->checkBox_G->checkState();
+            int b = ui->checkBox_B->checkState();
+            cv::Mat resimg = MV.get_frame(frameOrigin, r, g, b);
+            QImage qimg_v(resimg.data, resimg.cols, resimg.rows, resimg.step, QImage::Format_RGB888);
+            pixmap_Video.setPixmap( QPixmap::fromImage(qimg_v) );
+            ui->graphicsView_Video->fitInView(&pixmap_Video, Qt::KeepAspectRatio);
+
         }
         qApp->processEvents();
     }

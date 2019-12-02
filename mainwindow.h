@@ -40,6 +40,7 @@ public:
     cv::VideoCapture video;
     Ui::MainWindow *ui;
     cv::Mat frameOrigin;
+    myVideo MV;
 
 private:
     QGraphicsPixmapItem pixmap_R;
