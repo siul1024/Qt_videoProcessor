@@ -1,7 +1,7 @@
 #ifndef MYVIDEO_H
 #define MYVIDEO_H
 
-#include "opencv2/opencv.hpp"
+#include "mainwindow.h"
 
 
 class myVideo
@@ -10,8 +10,6 @@ class myVideo
 public:
     myVideo();
 
-
-public:
     cv::Mat get_frame(cv::Mat frameOrigin, int r, int g, int b);
 
 

@@ -82,6 +82,16 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(790, 563);
+        QPalette palette;
+        QBrush brush(QColor(203, 203, 203, 255));
+        brush.setStyle(Qt::SolidPattern);
+        palette.setBrush(QPalette::Active, QPalette::Highlight, brush);
+        palette.setBrush(QPalette::Inactive, QPalette::Highlight, brush);
+        QBrush brush1(QColor(145, 145, 145, 255));
+        brush1.setStyle(Qt::SolidPattern);
+        palette.setBrush(QPalette::Disabled, QPalette::Highlight, brush1);
+        MainWindow->setPalette(palette);
+        MainWindow->setTabletTracking(false);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         horizontalLayoutWidget = new QWidget(centralwidget);
@@ -192,6 +202,10 @@ public:
         horizontalLayout_4->setContentsMargins(0, 0, 0, 0);
         horizontalSlider_trans = new QSlider(horizontalLayoutWidget_4);
         horizontalSlider_trans->setObjectName(QString::fromUtf8("horizontalSlider_trans"));
+        horizontalSlider_trans->setMinimum(-150);
+        horizontalSlider_trans->setMaximum(150);
+        horizontalSlider_trans->setValue(0);
+        horizontalSlider_trans->setTracking(true);
         horizontalSlider_trans->setOrientation(Qt::Horizontal);
 
         horizontalLayout_4->addWidget(horizontalSlider_trans);
@@ -199,6 +213,9 @@ public:
         dial_trans = new QDial(tabTransform);
         dial_trans->setObjectName(QString::fromUtf8("dial_trans"));
         dial_trans->setGeometry(QRect(460, 300, 101, 101));
+        dial_trans->setMaximum(36);
+        dial_trans->setValue(0);
+        dial_trans->setWrapping(true);
         tabWidget->addTab(tabTransform, QString());
         tabREC = new QWidget();
         tabREC->setObjectName(QString::fromUtf8("tabREC"));
@@ -274,7 +291,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -284,6 +301,7 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         label_4->setText(QApplication::translate("MainWindow", "File Path / RTSP Url / Camera Index :", nullptr));
+        videoEdit->setText(QApplication::translate("MainWindow", "0", nullptr));
         Button_start->setText(QApplication::translate("MainWindow", "START", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "GREEN CHANNEL HISTOGRAM", nullptr));
         label->setText(QApplication::translate("MainWindow", "RED CHANNEL HISTOGRAM", nullptr));
@@ -303,7 +321,7 @@ public:
         Button_LINE->setText(QApplication::translate("MainWindow", "LINE", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tabDetecting), QApplication::translate("MainWindow", "Detecting", nullptr));
         label_6->setText(QApplication::translate("MainWindow", "debug:", nullptr));
-        label_7->setText(QApplication::translate("MainWindow", "debug:", nullptr));
+        label_7->setText(QString());
     } // retranslateUi
 
 };

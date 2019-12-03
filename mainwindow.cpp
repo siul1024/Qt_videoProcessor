@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "mytransform.h"
+#include "myvideo.h"
+
 
 using namespace cv;
 using namespace std;
@@ -82,6 +84,7 @@ void MainWindow::on_Button_start_clicked()
 //Video tab 출력
         if (ui->tabWidget->currentIndex() == 0)
         {
+            myVideo MV;
             int r = ui->checkBox_R->checkState();
             int g = ui->checkBox_G->checkState();
             int b = ui->checkBox_B->checkState();
@@ -94,10 +97,11 @@ void MainWindow::on_Button_start_clicked()
 //Transform tab 출력
         if (ui->tabWidget->currentIndex() == 1)
         {
-            myTransform TF(ui);
-            cv::Mat resimg_t = TF.get_frame_trans(frameOrigin);
+            myTransform TF;
+            cv::Mat resimg_t = TF.get_frame_trans(frameOrigin, ui);
             QImage qimg_t(resimg_t.data, resimg_t.cols, resimg_t.rows, resimg_t.step, QImage::Format_RGB888);
-            pixmap_Trans.setPixmap( QPixmap::fromImage(qimg_t) );
+            pixmap_Trans.setPixmap( QPixmap::fromImage(qimg_t.rgbSwapped()) );
+//            ui->graphicsView_trans->centerOn(&pixmap_Trans);
             ui->graphicsView_trans->fitInView(&pixmap_Trans, Qt::KeepAspectRatio);
         }
 

@@ -1,5 +1,5 @@
 #include "myvideo.h"
-
+#include "ui_mainwindow.h"
 
 myVideo::myVideo()
 {

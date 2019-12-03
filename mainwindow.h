@@ -10,7 +10,7 @@
 #include <QCloseEvent>
 #include <QMessageBox>
 
-#include "myvideo.h"
+
 #include "opencv2/opencv.hpp"
 
 
@@ -41,7 +41,7 @@ public:
     cv::VideoCapture video;
     Ui::MainWindow *ui;
     cv::Mat frameOrigin;
-    myVideo MV;
+
 
 
 private:
