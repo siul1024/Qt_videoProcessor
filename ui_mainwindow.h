@@ -31,6 +31,11 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralwidget;
+    QWidget *horizontalLayoutWidget;
+    QHBoxLayout *horizontalLayout;
+    QLabel *label_4;
+    QLineEdit *videoEdit;
+    QPushButton *Button_start;
     QWidget *gridLayoutWidget;
     QGridLayout *gridLayout;
     QLabel *label_2;
@@ -52,7 +57,7 @@ public:
     QWidget *horizontalLayoutWidget_4;
     QHBoxLayout *horizontalLayout_4;
     QSlider *horizontalSlider_trans;
-    QDial *dial;
+    QDial *dial_trans;
     QWidget *tabREC;
     QGraphicsView *graphicsView_rec;
     QWidget *horizontalLayoutWidget_2;
@@ -69,22 +74,40 @@ public:
     QPushButton *Button_FACE;
     QPushButton *pushButton_3;
     QPushButton *Button_LINE;
-    QWidget *horizontalLayoutWidget;
-    QHBoxLayout *horizontalLayout;
-    QLabel *label_4;
-    QLineEdit *videoEdit;
-    QPushButton *Button_start;
+    QLabel *label_6;
+    QLabel *label_7;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(801, 538);
+        MainWindow->resize(790, 563);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
+        horizontalLayoutWidget = new QWidget(centralwidget);
+        horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
+        horizontalLayoutWidget->setGeometry(QRect(10, 500, 771, 31));
+        horizontalLayout = new QHBoxLayout(horizontalLayoutWidget);
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setContentsMargins(0, 0, 0, 0);
+        label_4 = new QLabel(horizontalLayoutWidget);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
+
+        horizontalLayout->addWidget(label_4);
+
+        videoEdit = new QLineEdit(horizontalLayoutWidget);
+        videoEdit->setObjectName(QString::fromUtf8("videoEdit"));
+
+        horizontalLayout->addWidget(videoEdit);
+
+        Button_start = new QPushButton(horizontalLayoutWidget);
+        Button_start->setObjectName(QString::fromUtf8("Button_start"));
+
+        horizontalLayout->addWidget(Button_start);
+
         gridLayoutWidget = new QWidget(centralwidget);
         gridLayoutWidget->setObjectName(QString::fromUtf8("gridLayoutWidget"));
-        gridLayoutWidget->setGeometry(QRect(10, 30, 201, 461));
+        gridLayoutWidget->setGeometry(QRect(10, 20, 191, 471));
         gridLayout = new QGridLayout(gridLayoutWidget);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         gridLayout->setContentsMargins(0, 0, 0, 0);
@@ -125,7 +148,7 @@ public:
 
         tabWidget = new QTabWidget(centralwidget);
         tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
-        tabWidget->setGeometry(QRect(220, 10, 571, 481));
+        tabWidget->setGeometry(QRect(210, 10, 571, 481));
         tabVideo = new QWidget();
         tabVideo->setObjectName(QString::fromUtf8("tabVideo"));
         graphicsView_Video = new QGraphicsView(tabVideo);
@@ -173,9 +196,9 @@ public:
 
         horizontalLayout_4->addWidget(horizontalSlider_trans);
 
-        dial = new QDial(tabTransform);
-        dial->setObjectName(QString::fromUtf8("dial"));
-        dial->setGeometry(QRect(460, 300, 101, 101));
+        dial_trans = new QDial(tabTransform);
+        dial_trans->setObjectName(QString::fromUtf8("dial_trans"));
+        dial_trans->setGeometry(QRect(460, 300, 101, 101));
         tabWidget->addTab(tabTransform, QString());
         tabREC = new QWidget();
         tabREC->setObjectName(QString::fromUtf8("tabREC"));
@@ -241,27 +264,12 @@ public:
         horizontalLayout_3->addWidget(Button_LINE);
 
         tabWidget->addTab(tabDetecting, QString());
-        horizontalLayoutWidget = new QWidget(centralwidget);
-        horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
-        horizontalLayoutWidget->setGeometry(QRect(10, 500, 781, 31));
-        horizontalLayout = new QHBoxLayout(horizontalLayoutWidget);
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        horizontalLayout->setContentsMargins(0, 0, 0, 0);
-        label_4 = new QLabel(horizontalLayoutWidget);
-        label_4->setObjectName(QString::fromUtf8("label_4"));
-
-        horizontalLayout->addWidget(label_4);
-
-        videoEdit = new QLineEdit(horizontalLayoutWidget);
-        videoEdit->setObjectName(QString::fromUtf8("videoEdit"));
-
-        horizontalLayout->addWidget(videoEdit);
-
-        Button_start = new QPushButton(horizontalLayoutWidget);
-        Button_start->setObjectName(QString::fromUtf8("Button_start"));
-
-        horizontalLayout->addWidget(Button_start);
-
+        label_6 = new QLabel(centralwidget);
+        label_6->setObjectName(QString::fromUtf8("label_6"));
+        label_6->setGeometry(QRect(10, 540, 51, 18));
+        label_7 = new QLabel(centralwidget);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+        label_7->setGeometry(QRect(70, 540, 711, 18));
         MainWindow->setCentralWidget(centralwidget);
 
         retranslateUi(MainWindow);
@@ -275,6 +283,8 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
+        label_4->setText(QApplication::translate("MainWindow", "File Path / RTSP Url / Camera Index :", nullptr));
+        Button_start->setText(QApplication::translate("MainWindow", "START", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "GREEN CHANNEL HISTOGRAM", nullptr));
         label->setText(QApplication::translate("MainWindow", "RED CHANNEL HISTOGRAM", nullptr));
         label_3->setText(QApplication::translate("MainWindow", "BLUE CHANNEL HISTOGRAM", nullptr));
@@ -292,8 +302,8 @@ public:
         pushButton_3->setText(QApplication::translate("MainWindow", "CAR", nullptr));
         Button_LINE->setText(QApplication::translate("MainWindow", "LINE", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tabDetecting), QApplication::translate("MainWindow", "Detecting", nullptr));
-        label_4->setText(QApplication::translate("MainWindow", "File Path / RTSP Url / Camera Index :", nullptr));
-        Button_start->setText(QApplication::translate("MainWindow", "START", nullptr));
+        label_6->setText(QApplication::translate("MainWindow", "debug:", nullptr));
+        label_7->setText(QApplication::translate("MainWindow", "debug:", nullptr));
     } // retranslateUi
 
 };

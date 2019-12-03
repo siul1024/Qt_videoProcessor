@@ -6,7 +6,6 @@ myVideo::myVideo()
 
 }
 
-
 cv::Mat myVideo::get_frame(cv::Mat frameOrigin, int r, int g, int b)
 {   cv::Mat bgr[3];
     std::vector<cv::Mat> imgv;

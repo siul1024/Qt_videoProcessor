@@ -20,13 +20,13 @@ LIBS += -L/usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgcodecs -lope
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    myvideo.cpp \
-    transform.cpp
+    mytransform.cpp \
+    myvideo.cpp
 
 HEADERS += \
     mainwindow.h \
-    myvideo.h \
-    transform.h
+    mytransform.h \
+    myvideo.h
 
 FORMS += \
     mainwindow.ui

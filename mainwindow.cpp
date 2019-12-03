@@ -1,9 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include "mytransform.h"
 
 using namespace cv;
 using namespace std;
+
+
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -16,10 +19,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView_G->scene()->addItem(&pixmap_G);
     ui->graphicsView_B->setScene(new QGraphicsScene(this));
     ui->graphicsView_B->scene()->addItem(&pixmap_B);
+
     ui->graphicsView_detecting->setScene(new QGraphicsScene(this));
     ui->graphicsView_detecting->scene()->addItem(&pixmap_DETECT);
     ui->graphicsView_Video->setScene(new QGraphicsScene(this));
     ui->graphicsView_Video->scene()->addItem(&pixmap_Video);
+    ui->graphicsView_trans->setScene(new QGraphicsScene(this));
+    ui->graphicsView_trans->scene()->addItem(&pixmap_Trans);
 
 }
 
@@ -76,7 +82,6 @@ void MainWindow::on_Button_start_clicked()
 //Video tab 출력
         if (ui->tabWidget->currentIndex() == 0)
         {
-
             int r = ui->checkBox_R->checkState();
             int g = ui->checkBox_G->checkState();
             int b = ui->checkBox_B->checkState();
@@ -86,6 +91,16 @@ void MainWindow::on_Button_start_clicked()
             ui->graphicsView_Video->fitInView(&pixmap_Video, Qt::KeepAspectRatio);
 
         }
+//Transform tab 출력
+        if (ui->tabWidget->currentIndex() == 1)
+        {
+            myTransform TF(ui);
+            cv::Mat resimg_t = TF.get_frame_trans(frameOrigin);
+            QImage qimg_t(resimg_t.data, resimg_t.cols, resimg_t.rows, resimg_t.step, QImage::Format_RGB888);
+            pixmap_Trans.setPixmap( QPixmap::fromImage(qimg_t) );
+            ui->graphicsView_trans->fitInView(&pixmap_Trans, Qt::KeepAspectRatio);
+        }
+
         qApp->processEvents();
     }
     ui->Button_start->setText("Start");
