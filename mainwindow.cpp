@@ -1,12 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "myrec.h"
 #include "mytransform.h"
 #include "myvideo.h"
 
 
 using namespace cv;
 using namespace std;
-
 
 
 
@@ -28,12 +28,36 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView_Video->scene()->addItem(&pixmap_Video);
     ui->graphicsView_trans->setScene(new QGraphicsScene(this));
     ui->graphicsView_trans->scene()->addItem(&pixmap_Trans);
+    ui->graphicsView_rec->setScene(new QGraphicsScene(this));
+    ui->graphicsView_rec->scene()->addItem(&pixmap);
+    ui->Button_rec_stop->setEnabled(0);
 
 }
+
+////슬롯
+void MainWindow::on_Button_rec_clicked()
+{
+    ui->Button_rec->setEnabled(0);
+    ui->Button_rec_stop->setEnabled(1);
+}
+void MainWindow::on_Button_rec_stop_clicked()
+{
+        ui->Button_rec_stop->setEnabled(0);
+        ui->Button_rec->setEnabled(1);
+}
+
+//void MainWindow::startTimer()
+//{
+//timer = new QTimer();
+//connect(timer, &QTimer::timeout, this, &Timer::updateProgress);
+//timer->start(1000);
+//start_button->setEnabled(0);
+//}
 
 MainWindow::~MainWindow()
 {
     delete ui;
+
 }
 
 
@@ -45,7 +69,9 @@ void MainWindow::on_Button_start_clicked()
     if(video.isOpened())
     {
         ui->Button_start->setText("START");
+
         video.release();
+
         return;
     }
 
@@ -76,15 +102,39 @@ void MainWindow::on_Button_start_clicked()
 
     ui->Button_start->setText("Stop");
 
+    cv::Size size = cv::Size(320, 240);
+
+    video.set(cv::CAP_PROP_FRAME_WIDTH, 320);
+    video.set(cv::CAP_PROP_FRAME_HEIGHT, 240);
+
+    video >> frameOrigin;
+
+    myVideo MV;
+    myTransform TF;
+    myREC *MR = new myREC(ui, size);
+
+//    std::string rec_path = "./videotest.avi";
+
+//    int fourcc = cv::VideoWriter::fourcc('D', 'X', '5', '0');
+//    double fps = 29.97;
+//    int delay = cvRound(1000.0 / fps);
+
+//    cv::VideoWriter writer;
+//    writer.open(rec_path, fourcc, fps, size);
+//    CV_Assert(writer.isOpened());
+
+
+
+
     while(video.isOpened())
     {
         video >> frameOrigin;
 // 히스토그램 출력
         histoview(frameOrigin);
+
 //Video tab 출력
         if (ui->tabWidget->currentIndex() == 0)
         {
-            myVideo MV;
             int r = ui->checkBox_R->checkState();
             int g = ui->checkBox_G->checkState();
             int b = ui->checkBox_B->checkState();
@@ -97,17 +147,35 @@ void MainWindow::on_Button_start_clicked()
 //Transform tab 출력
         if (ui->tabWidget->currentIndex() == 1)
         {
-            myTransform TF;
+
             cv::Mat resimg_t = TF.get_frame_trans(frameOrigin, ui);
             QImage qimg_t(resimg_t.data, resimg_t.cols, resimg_t.rows, resimg_t.step, QImage::Format_RGB888);
             pixmap_Trans.setPixmap( QPixmap::fromImage(qimg_t.rgbSwapped()) );
-//            ui->graphicsView_trans->centerOn(&pixmap_Trans);
             ui->graphicsView_trans->fitInView(&pixmap_Trans, Qt::KeepAspectRatio);
         }
+//REC tab 출력
+        if (ui->tabWidget->currentIndex() == 2)
+        {
 
+            if (ui->Button_rec->isEnabled() == 0)
+            {
+                MR->REC_clicked(frameOrigin);
+//                writer << frameOrigin;
+//                cv::waitKey(delay);
+                ui->label_7->setText("REC running..");
+            }
+            else
+            {
+                ui->label_7->setText("");
+            }
+            QImage qimg(frameOrigin.data, frameOrigin.cols, frameOrigin.rows, frameOrigin.step, QImage::Format_RGB888);
+            pixmap.setPixmap( QPixmap::fromImage(qimg.rgbSwapped()) );
+            ui->graphicsView_rec->fitInView(&pixmap, Qt::KeepAspectRatio);
+        }
         qApp->processEvents();
     }
     ui->Button_start->setText("Start");
+    delete MR;
 }
 
 
@@ -135,13 +203,13 @@ void MainWindow::draw_histo(Mat hist, Mat &hist_img, int channels)
         Point2f pt2(end_x, hist.at <float>(i));
 
         if (pt2.y > 0)
-            if (channels==0)
-                rectangle(hist_img, pt1, pt2, Scalar(255,0,0), -1);
+        {   if (channels==0)
+            {   rectangle(hist_img, pt1, pt2, Scalar(255,0,0), -1);}
             if (channels==1)
-                rectangle(hist_img, pt1, pt2, Scalar(0,255,0), -1);
+            {   rectangle(hist_img, pt1, pt2, Scalar(0,255,0), -1);}
             if (channels==2)
-                rectangle(hist_img, pt1, pt2, Scalar(0,0,255), -1);
-
+            {   rectangle(hist_img, pt1, pt2, Scalar(0,0,255), -1);}
+        }
     }
     flip(hist_img, hist_img, 0); //뒤집기
 }
@@ -180,7 +248,6 @@ void MainWindow::histoview(Mat frameOrigin)
     }
 }
 
-
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     if(video.isOpened())
@@ -195,5 +262,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->accept();
     }
 }
+
 
 

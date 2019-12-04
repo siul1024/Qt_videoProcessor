@@ -65,8 +65,9 @@ public:
     QRadioButton *radioButton;
     QLabel *label_5;
     QLineEdit *lineEdit_path;
-    QPushButton *Button_rec;
     QPushButton *Button_capture;
+    QPushButton *Button_rec;
+    QPushButton *Button_rec_stop;
     QWidget *tabDetecting;
     QGraphicsView *graphicsView_detecting;
     QWidget *horizontalLayoutWidget_3;
@@ -166,7 +167,7 @@ public:
         graphicsView_Video->setGeometry(QRect(10, 10, 551, 391));
         horizontalLayoutWidget_5 = new QWidget(tabVideo);
         horizontalLayoutWidget_5->setObjectName(QString::fromUtf8("horizontalLayoutWidget_5"));
-        horizontalLayoutWidget_5->setGeometry(QRect(180, 410, 204, 26));
+        horizontalLayoutWidget_5->setGeometry(QRect(150, 410, 261, 26));
         horizontalLayout_5 = new QHBoxLayout(horizontalLayoutWidget_5);
         horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
         horizontalLayout_5->setContentsMargins(0, 0, 0, 0);
@@ -224,7 +225,7 @@ public:
         graphicsView_rec->setGeometry(QRect(10, 10, 551, 391));
         horizontalLayoutWidget_2 = new QWidget(tabREC);
         horizontalLayoutWidget_2->setObjectName(QString::fromUtf8("horizontalLayoutWidget_2"));
-        horizontalLayoutWidget_2->setGeometry(QRect(10, 410, 551, 31));
+        horizontalLayoutWidget_2->setGeometry(QRect(10, 410, 401, 31));
         horizontalLayout_2 = new QHBoxLayout(horizontalLayoutWidget_2);
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
@@ -243,16 +244,24 @@ public:
 
         horizontalLayout_2->addWidget(lineEdit_path);
 
-        Button_rec = new QPushButton(horizontalLayoutWidget_2);
-        Button_rec->setObjectName(QString::fromUtf8("Button_rec"));
-
-        horizontalLayout_2->addWidget(Button_rec);
-
-        Button_capture = new QPushButton(horizontalLayoutWidget_2);
+        Button_capture = new QPushButton(tabREC);
         Button_capture->setObjectName(QString::fromUtf8("Button_capture"));
-
-        horizontalLayout_2->addWidget(Button_capture);
-
+        Button_capture->setGeometry(QRect(480, 410, 81, 31));
+        Button_rec = new QPushButton(tabREC);
+        Button_rec->setObjectName(QString::fromUtf8("Button_rec"));
+        Button_rec->setGeometry(QRect(420, 410, 31, 31));
+        QPalette palette1;
+        QBrush brush2(QColor(204, 0, 0, 255));
+        brush2.setStyle(Qt::SolidPattern);
+        palette1.setBrush(QPalette::Active, QPalette::ButtonText, brush2);
+        palette1.setBrush(QPalette::Inactive, QPalette::ButtonText, brush2);
+        QBrush brush3(QColor(190, 190, 190, 255));
+        brush3.setStyle(Qt::SolidPattern);
+        palette1.setBrush(QPalette::Disabled, QPalette::ButtonText, brush3);
+        Button_rec->setPalette(palette1);
+        Button_rec_stop = new QPushButton(tabREC);
+        Button_rec_stop->setObjectName(QString::fromUtf8("Button_rec_stop"));
+        Button_rec_stop->setGeometry(QRect(450, 410, 31, 31));
         tabWidget->addTab(tabREC, QString());
         tabDetecting = new QWidget();
         tabDetecting->setObjectName(QString::fromUtf8("tabDetecting"));
@@ -291,7 +300,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -313,14 +322,16 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tabTransform), QApplication::translate("MainWindow", "Transform", nullptr));
         radioButton->setText(QApplication::translate("MainWindow", "Brightness", nullptr));
         label_5->setText(QApplication::translate("MainWindow", "PATH", nullptr));
-        Button_rec->setText(QApplication::translate("MainWindow", "REC", nullptr));
-        Button_capture->setText(QApplication::translate("MainWindow", "Capture", nullptr));
+        lineEdit_path->setText(QApplication::translate("MainWindow", "./videotest.avi", nullptr));
+        Button_capture->setText(QApplication::translate("MainWindow", "CAPTURE", nullptr));
+        Button_rec->setText(QApplication::translate("MainWindow", "\342\227\217", nullptr));
+        Button_rec_stop->setText(QApplication::translate("MainWindow", "\342\226\240", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tabREC), QApplication::translate("MainWindow", "REC", nullptr));
         Button_FACE->setText(QApplication::translate("MainWindow", "FACE", nullptr));
         pushButton_3->setText(QApplication::translate("MainWindow", "CAR", nullptr));
         Button_LINE->setText(QApplication::translate("MainWindow", "LINE", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tabDetecting), QApplication::translate("MainWindow", "Detecting", nullptr));
-        label_6->setText(QApplication::translate("MainWindow", "debug:", nullptr));
+        label_6->setText(QApplication::translate("MainWindow", "status:", nullptr));
         label_7->setText(QString());
     } // retranslateUi
 

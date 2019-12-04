@@ -7,7 +7,6 @@ myTransform::myTransform()
 
 }
 
-
 void myTransform::Print(Ui::MainWindow* ui)
 {
     ui->label_7->setText("This is Transform tab");
@@ -29,7 +28,7 @@ int myTransform::setSlider(Ui::MainWindow *ui)
 cv::Mat myTransform::get_frame_trans(cv::Mat frameOrigin, Ui::MainWindow *ui)
 {
     cv::Mat resframe;
-    cv::resize(frameOrigin, frameOrigin, cv::Size(480, 360), 0, 0, cv::INTER_LINEAR);
+    cv::resize(frameOrigin, frameOrigin, cv::Size(320, 240), 0, 0, cv::INTER_LINEAR);
     resframe = mat_rotation(frameOrigin, ui);
 
     return mat_move_and_resize(resframe, ui);
@@ -55,28 +54,3 @@ cv::Mat myTransform::mat_move_and_resize(cv::Mat frame, Ui::MainWindow *ui)
     return resframe;
 }
 
-//Point2f cp(src.cols / 2.f, src.rows / 2.f);
-//11        Mat M = getRotationMatrix2D(cp, 20, 1);
-//12
-//13        Mat dst;
-//14        warpAffine(src, dst, M, Size());
-
-//if (ui->dialB->isChecked()) {
-//        ui->dial->setEnabled(true);
-//        displayValue(ui->dial->value()*10);
-//        ui->slider->setValue(0);
-//        ui->slider->setEnabled(false);
-
-
-
-
-//connect(ui->dial, SIGNAL(valueChanged(int)),
-//        SLOT(setValue()));
-//connect(ui->slider, SIGNAL(valueChanged(int)),
-//        SLOT(setValue()));
-//connect(ui->sliderB, SIGNAL(toggled(bool)),
-//        SLOT(setValue()));
-//connect(ui->dialB, SIGNAL(toggled(bool)),
-//        SLOT(setValue()));
-//ui->dial->setEnabled(false);
-//ui->slider->setEnabled(false);

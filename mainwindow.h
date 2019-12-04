@@ -35,7 +35,8 @@ protected:
 
 private slots:
     void on_Button_start_clicked();
-
+    void on_Button_rec_clicked();
+    void on_Button_rec_stop_clicked();
 
 public:
     cv::VideoCapture video;
@@ -45,6 +46,7 @@ public:
 
 
 private:
+    QGraphicsPixmapItem pixmap;
     QGraphicsPixmapItem pixmap_R;
     QGraphicsPixmapItem pixmap_G;
     QGraphicsPixmapItem pixmap_B;

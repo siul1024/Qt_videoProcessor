@@ -15,16 +15,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 INCLUDEPATH += /usr/local/include/opencv4
-LIBS += -L/usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgcodecs -lopencv_freetype -lopencv_videoio -lopencv_imgproc -lopencv_calib3d -lm
+LIBS += -L/usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgcodecs -lopencv_videoio -lopencv_imgproc -lopencv_calib3d -lm
 
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    myrec.cpp \
     mytransform.cpp \
     myvideo.cpp
 
 HEADERS += \
     mainwindow.h \
+    myrec.h \
     mytransform.h \
     myvideo.h
 
