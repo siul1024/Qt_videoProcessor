@@ -46,13 +46,6 @@ void MainWindow::on_Button_rec_stop_clicked()
         ui->Button_rec->setEnabled(1);
 }
 
-//void MainWindow::startTimer()
-//{
-//timer = new QTimer();
-//connect(timer, &QTimer::timeout, this, &Timer::updateProgress);
-//timer->start(1000);
-//start_button->setEnabled(0);
-//}
 
 MainWindow::~MainWindow()
 {
@@ -109,21 +102,9 @@ void MainWindow::on_Button_start_clicked()
 
     video >> frameOrigin;
 
-    myVideo MV;
+    myVideo *MV = new myVideo(ui);
     myTransform TF;
     myREC *MR = new myREC(ui, size);
-
-//    std::string rec_path = "./videotest.avi";
-
-//    int fourcc = cv::VideoWriter::fourcc('D', 'X', '5', '0');
-//    double fps = 29.97;
-//    int delay = cvRound(1000.0 / fps);
-
-//    cv::VideoWriter writer;
-//    writer.open(rec_path, fourcc, fps, size);
-//    CV_Assert(writer.isOpened());
-
-
 
 
     while(video.isOpened())
@@ -135,19 +116,14 @@ void MainWindow::on_Button_start_clicked()
 //Video tab 출력
         if (ui->tabWidget->currentIndex() == 0)
         {
-            int r = ui->checkBox_R->checkState();
-            int g = ui->checkBox_G->checkState();
-            int b = ui->checkBox_B->checkState();
-            cv::Mat resimg = MV.get_frame(frameOrigin, r, g, b);
+            cv::Mat resimg = MV->get_frame(frameOrigin, ui);
             QImage qimg_v(resimg.data, resimg.cols, resimg.rows, resimg.step, QImage::Format_RGB888);
             pixmap_Video.setPixmap( QPixmap::fromImage(qimg_v) );
             ui->graphicsView_Video->fitInView(&pixmap_Video, Qt::KeepAspectRatio);
-
         }
 //Transform tab 출력
         if (ui->tabWidget->currentIndex() == 1)
         {
-
             cv::Mat resimg_t = TF.get_frame_trans(frameOrigin, ui);
             QImage qimg_t(resimg_t.data, resimg_t.cols, resimg_t.rows, resimg_t.step, QImage::Format_RGB888);
             pixmap_Trans.setPixmap( QPixmap::fromImage(qimg_t.rgbSwapped()) );
@@ -160,9 +136,7 @@ void MainWindow::on_Button_start_clicked()
             if (ui->Button_rec->isEnabled() == 0)
             {
                 MR->REC_clicked(frameOrigin);
-//                writer << frameOrigin;
-//                cv::waitKey(delay);
-                ui->label_7->setText("REC running..");
+                ui->label_7->setText("recoding...");
             }
             else
             {
@@ -176,6 +150,7 @@ void MainWindow::on_Button_start_clicked()
     }
     ui->Button_start->setText("Start");
     delete MR;
+    delete MV;
 }
 
 
