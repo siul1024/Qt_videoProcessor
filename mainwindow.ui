@@ -154,7 +154,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tabVideo">
      <attribute name="title">
@@ -401,6 +401,38 @@
        <string>■</string>
       </property>
      </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>510</x>
+        <y>380</y>
+        <width>51</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:white;</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_9">
+      <property name="geometry">
+       <rect>
+        <x>420</x>
+        <y>380</y>
+        <width>91</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:white;</string>
+      </property>
+      <property name="text">
+       <string>brightness:</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tabDetecting">
      <attribute name="title">
@@ -434,16 +466,16 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_3">
+        <widget class="QPushButton" name="Button_CAR">
          <property name="text">
           <string>CAR</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="Button_LINE">
+        <widget class="QPushButton" name="Button_O">
          <property name="text">
-          <string>LINE</string>
+          <string>Origin</string>
          </property>
         </widget>
        </item>
@@ -467,7 +499,7 @@
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>60</x>
       <y>540</y>
       <width>711</width>
       <height>18</height>

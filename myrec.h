@@ -15,11 +15,12 @@ public:
 
 public:
     myREC(Ui::MainWindow *ui, cv::Size size);
+    ~myREC();
     void REC_clicked(cv::Mat frameOrigin);
-
+    void CAP_clicked(cv::Mat frameOrigin);
+    cv::Mat Option_checked(cv::Mat frameOrigin, int val);
 private:
     std::string get_filepath(Ui::MainWindow *ui);
-
 
 };
 

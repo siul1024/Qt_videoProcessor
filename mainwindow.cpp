@@ -3,12 +3,11 @@
 #include "myrec.h"
 #include "mytransform.h"
 #include "myvideo.h"
-
+#include "myhistogram.h"
+#include "mydetecting.h"
 
 using namespace cv;
 using namespace std;
-
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,27 +29,57 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView_trans->scene()->addItem(&pixmap_Trans);
     ui->graphicsView_rec->setScene(new QGraphicsScene(this));
     ui->graphicsView_rec->scene()->addItem(&pixmap);
-    ui->Button_rec_stop->setEnabled(0);
 
+    ui->Button_rec_stop->setEnabled(0);
+    ui->Button_O->setEnabled(0);
+    MYGPIO = new myGPIO();
 }
+
 
 ////슬롯
 void MainWindow::on_Button_rec_clicked()
 {
     ui->Button_rec->setEnabled(0);
     ui->Button_rec_stop->setEnabled(1);
+    bth = new BlinkThread(this);
+    bth->start();
 }
 void MainWindow::on_Button_rec_stop_clicked()
 {
-        ui->Button_rec_stop->setEnabled(0);
-        ui->Button_rec->setEnabled(1);
+    ui->Button_rec_stop->setEnabled(0);
+    ui->Button_rec->setEnabled(1);
+    bth->terminate();
+    digitalWrite(1, 0);
+}
+void MainWindow::on_Button_capture_clicked()
+{
+    ui->Button_capture->setEnabled(0);
+}
+
+void MainWindow::on_Button_FACE_clicked()
+{
+    ui->Button_CAR->setEnabled(1);
+    ui->Button_FACE->setEnabled(0);
+    ui->Button_O->setEnabled(1);
+}
+void MainWindow::on_Button_CAR_clicked()
+{
+    ui->Button_CAR->setEnabled(0);
+    ui->Button_FACE->setEnabled(1);
+    ui->Button_O->setEnabled(1);
+}
+void MainWindow::on_Button_O_clicked()
+{
+    ui->Button_CAR->setEnabled(1);
+    ui->Button_FACE->setEnabled(1);
+    ui->Button_O->setEnabled(0);
 }
 
 
 MainWindow::~MainWindow()
 {
-    delete ui;
 
+    delete ui;
 }
 
 
@@ -62,12 +91,9 @@ void MainWindow::on_Button_start_clicked()
     if(video.isOpened())
     {
         ui->Button_start->setText("START");
-
         video.release();
-
         return;
     }
-
     bool isCamera;
     int cameraIndex = ui->videoEdit->text().toInt(&isCamera);
     if(isCamera)
@@ -95,24 +121,22 @@ void MainWindow::on_Button_start_clicked()
 
     ui->Button_start->setText("Stop");
 
-    cv::Size size = cv::Size(320, 240);
-
     video.set(cv::CAP_PROP_FRAME_WIDTH, 320);
     video.set(cv::CAP_PROP_FRAME_HEIGHT, 240);
 
+    // frameOrigin 초기화
     video >> frameOrigin;
 
     myVideo *MV = new myVideo(ui);
-    myTransform TF;
+    myTransform *TF = new myTransform;
     myREC *MR = new myREC(ui, size);
+    myDetecting *DT = new myDetecting;
 
 
     while(video.isOpened())
     {
         video >> frameOrigin;
-// 히스토그램 출력
-        histoview(frameOrigin);
-
+        myHistogram::histoview(this);
 //Video tab 출력
         if (ui->tabWidget->currentIndex() == 0)
         {
@@ -124,7 +148,7 @@ void MainWindow::on_Button_start_clicked()
 //Transform tab 출력
         if (ui->tabWidget->currentIndex() == 1)
         {
-            cv::Mat resimg_t = TF.get_frame_trans(frameOrigin, ui);
+            cv::Mat resimg_t = TF->get_frame_trans(frameOrigin, ui);
             QImage qimg_t(resimg_t.data, resimg_t.cols, resimg_t.rows, resimg_t.step, QImage::Format_RGB888);
             pixmap_Trans.setPixmap( QPixmap::fromImage(qimg_t.rgbSwapped()) );
             ui->graphicsView_trans->fitInView(&pixmap_Trans, Qt::KeepAspectRatio);
@@ -132,96 +156,47 @@ void MainWindow::on_Button_start_clicked()
 //REC tab 출력
         if (ui->tabWidget->currentIndex() == 2)
         {
-
+            MYGPIO->read_brightness();
+            ui->label_8->setNum(MYGPIO->adcValue);
+            if (ui->radioButton->isChecked()==true)
+            {
+                frameOrigin = MR->Option_checked(frameOrigin, MYGPIO->adcValue);
+            }
             if (ui->Button_rec->isEnabled() == 0)
             {
                 MR->REC_clicked(frameOrigin);
-                ui->label_7->setText("recoding...");
             }
-            else
+
+            if (ui->Button_capture->isEnabled() == 0)
             {
-                ui->label_7->setText("");
+                MR->CAP_clicked(frameOrigin);
+                ui->Button_capture->setEnabled(1);
             }
             QImage qimg(frameOrigin.data, frameOrigin.cols, frameOrigin.rows, frameOrigin.step, QImage::Format_RGB888);
             pixmap.setPixmap( QPixmap::fromImage(qimg.rgbSwapped()) );
             ui->graphicsView_rec->fitInView(&pixmap, Qt::KeepAspectRatio);
         }
+        if (ui->tabWidget->currentIndex() == 3)
+        {   cv::Mat dtimg;
+            if (ui->Button_FACE->isEnabled() == 0)
+            {   dtimg = DT->face_detecting(frameOrigin);    }
+            else if (ui->Button_CAR->isEnabled() == 0)
+            {   dtimg = DT->car_detecting(frameOrigin);     }
+            else
+            {   dtimg = frameOrigin;    }
+            QImage qimg_d(dtimg.data, dtimg.cols, dtimg.rows, dtimg.step, QImage::Format_RGB888);
+            pixmap_DETECT.setPixmap( QPixmap::fromImage(qimg_d.rgbSwapped()) );
+            ui->graphicsView_detecting->fitInView(&pixmap_DETECT, Qt::KeepAspectRatio);
+        }
         qApp->processEvents();
     }
     ui->Button_start->setText("Start");
-    delete MR;
     delete MV;
+    delete TF;
+    delete MR;
+    delete DT;
 }
 
-
-void MainWindow::calc_histo(const cv::Mat& image, cv::Mat& hist, int channel)
-{   int bins=256; int range_max=256;
-    int		histSize[] = { bins };
-    float   range[] = { 0, (float)range_max };
-    int		channels[]= { 0, 1, 2 };
-    const float* ranges[] = { range };
-
-    cv::calcHist(&image, 1, &channels[channel], cv::Mat(), hist, 1, histSize, ranges);
-}
-
-void MainWindow::draw_histo(Mat hist, Mat &hist_img, int channels)
-{
-    hist_img = Mat(Size(256,200), CV_8UC3, Scalar(255,255,255));
-    float  bin = (float)hist_img.cols / hist.rows;  //=256
-    normalize(hist, hist, 0, 200, NORM_MINMAX);
-
-    for (int i = 0; i<hist.rows; i++)
-    {
-        float  start_x = (i * bin);
-        float  end_x = (i + 1) * bin;
-        Point2f pt1(start_x, 0);
-        Point2f pt2(end_x, hist.at <float>(i));
-
-        if (pt2.y > 0)
-        {   if (channels==0)
-            {   rectangle(hist_img, pt1, pt2, Scalar(255,0,0), -1);}
-            if (channels==1)
-            {   rectangle(hist_img, pt1, pt2, Scalar(0,255,0), -1);}
-            if (channels==2)
-            {   rectangle(hist_img, pt1, pt2, Scalar(0,0,255), -1);}
-        }
-    }
-    flip(hist_img, hist_img, 0); //뒤집기
-}
-
-void MainWindow::histoview(Mat frameOrigin)
-{
-    Mat bgr[3], bgrhist[3], bgrhist_img[3];
-
-    split(frameOrigin, bgr);
-    //blue
-    calc_histo(bgr[0], bgrhist[0], 0);
-    draw_histo(bgrhist[0], bgrhist_img[0], 0);
-    //green
-    calc_histo(bgr[1], bgrhist[1], 0);
-    draw_histo(bgrhist[1], bgrhist_img[1], 1);
-    //red
-    calc_histo(bgr[2], bgrhist[2], 0);
-    draw_histo(bgrhist[2], bgrhist_img[2], 2);
-
-    if(!frameOrigin.empty())
-    {   //red hist
-        QImage qimg2(bgrhist_img[2].data, bgrhist_img[2].cols, bgrhist_img[2].rows, bgrhist_img[2].step, QImage::Format_RGB888);
-
-        pixmap_R.setPixmap( QPixmap::fromImage(qimg2.rgbSwapped()) );
-        ui->graphicsView_R->fitInView(&pixmap_R, Qt::KeepAspectRatio);
-        //green hist
-        QImage qimg3(bgrhist_img[1].data, bgrhist_img[1].cols, bgrhist_img[1].rows, bgrhist_img[1].step, QImage::Format_RGB888);
-
-        pixmap_G.setPixmap( QPixmap::fromImage(qimg3.rgbSwapped()) );
-        ui->graphicsView_G->fitInView(&pixmap_G, Qt::KeepAspectRatio);
-        //blue hist
-        QImage qimg4(bgrhist_img[0].data, bgrhist_img[0].cols, bgrhist_img[0].rows, bgrhist_img[0].step, QImage::Format_RGB888);
-
-        pixmap_B.setPixmap( QPixmap::fromImage(qimg4.rgbSwapped()) );
-        ui->graphicsView_B->fitInView(&pixmap_B, Qt::KeepAspectRatio);
-    }
-}
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
